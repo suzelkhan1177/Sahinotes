@@ -12,6 +12,8 @@ const passport = require("passport");
 
 const mongoStore = require('connect-mongo');
 require("./config/passport-google-strategy");
+require('./config/nodemailer');
+// require('./config/mobile_auth'); 
 
 
 app.use(expressEjsLayout);
@@ -50,5 +52,4 @@ app.listen(port, (err) => {
   console.log("server Runing 8000", port);
 });
 
-  // Client ID =   1011703805644-0bd3gm5uo9unqsvk3aaepqehr8nntunk.apps.googleusercontent.com
-  // Client Secret = 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
+  
