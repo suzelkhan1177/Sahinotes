@@ -5,7 +5,8 @@ const userSchema = new mongoose.Schema({
     password: {type: String, require: true},
     name: {type: String, require: true},
     mobileOtp: {type: String},
-    mobile: {type: String}
+    mobile: {type: String},
+    accessToken: {type: String, default: null}
 }, {
     timestamps: true
 });

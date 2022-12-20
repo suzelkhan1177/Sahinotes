@@ -20,4 +20,5 @@ verify.addEventListener('click', function(e) {
 
     //   convert object to text so that you can send it in a url
     fetch(`/users/verify_otp/${JSON.stringify(obj)}`);
+    window.location = "/users/profile";
 });

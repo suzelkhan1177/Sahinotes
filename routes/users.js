@@ -27,4 +27,10 @@ router.get('/auth/google/callback',passport.authenticate('google', {failureRedir
 
 router.get('/send_otp_message/:mobileNumber', usersController.sendOtpMessage);
 router.get('/verify_otp/:obj', usersController.verifyOtp);
+router.get('/forget_password',usersController.forgetPassword);
+router.get('/update_password',usersController.updatePassword);
+
+router.post('/forget_password',usersController.forget_password_post);
+router.post('/update_password',usersController.update_password_post);
+
 module.exports = router;

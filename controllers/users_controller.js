@@ -1,5 +1,6 @@
 const User = require("../models/users");
-const nodemailerObject = require('../config/nodemailer');
+const accountCreatedMailer = require('../mailers/account_created_mailer');
+const forgetPasswordMailer = require('../mailers/forget_password_mailer');
 
 module.exports.user = (req, res) => {
   res.send("User page");
@@ -19,6 +20,14 @@ module.exports.signin = (req, res) => {
 
 module.exports.signup = (req, res) => {
   res.render("signup");
+};
+
+module.exports.forgetPassword = (req, res) => {
+  res.render("forget_password");
+};
+
+module.exports.updatePassword = (req, res) => {
+  res.render("update_password");
 };
 
 module.exports.create = (req, res) => {
@@ -47,6 +56,9 @@ module.exports.create = (req, res) => {
             console.log("Error is Creating user is create controller: ", err);
             return res.redirect("back");
           }
+
+             // i should send the email(user.email)
+             accountCreatedMailer.accountCreated(user);
 
           return res.redirect("/users/signin");
         }
@@ -133,3 +145,58 @@ module.exports.verifyOtp = (req, res) => {
       console.log('mobile number verified');
       return res.redirect('/users/profile');
 }
+
+module.exports.forget_password_post = (req, res) => {
+
+     var email = req.body.email;
+     var token = Math.floor(Math.random() * 9000) + 1000;
+     var accessToken = email + token;
+     User.findOneAndUpdate({email: email}, {accessToken: accessToken}, function(err, user) {
+      if (err) {console.log('Error find User in forget Password: ', err); return;}
+      if(!user) {
+          console.log('User not Found');
+
+      }else{
+        user.save();
+        var obj = {};
+        obj.email = user.email;
+        obj.url = `http://localhost:8000/users/update_password?accessToken=${accessToken}`
+       forgetPasswordMailer.forgetPassword(obj);
+       return res.redirect('/users/signin');
+      }
+  });
+}
+
+module.exports.update_password_post = (req, res) => {
+
+  var password = req.body.password;
+  var confirm_password = req.body.confirm_password;
+  var accessToken = req.body.accessToken;
+  console.log(password, confirm_password, accessToken);
+
+  if (password!=confirm_password) {
+    console.log('passwords dont match');
+    return res.redirect('back');
+} else {
+ var email = accessToken.substring(0, accessToken.length-4);
+ console.log(email);
+
+ User.findOne({email: email}, function(err, user) {
+  if (err) {console.log('Error in finding user: ', err); return;}
+     
+      if(accessToken == user.accessToken){
+        User.findOneAndUpdate({email: email}, {password: password, accessToken: null}, function(err, user) {
+          if (err) {console.log('Error in finding user: ', err); return;}
+          user.save();
+      });
+      }
+});
+
+    return res.redirect('/users/signin');
+}
+
+}
+
+
+
+
