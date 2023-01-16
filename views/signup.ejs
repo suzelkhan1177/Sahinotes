@@ -1,12 +1,29 @@
-<h1>sign up page</h1>
+<link rel="stylesheet" href='/css/signin.css')>
 
-<form action="/users/create" method="POST">
-    <input type="name" name="name" placeholder="your name">
-    <input type="email" name="email" placeholder="your email">
-    <input type="password" name="password" placeholder="your password">
-    <input type="password" name="confirm_password" placeholder="Confirm password">
-    <input type="submit" value="Sign Up">
-</form>
-
-<a href="/users/auth/google">google signup</a>
-<a href="/users/forget_password">forget Password</a>
+<div class="container" id="container">
+	<div class="form-container sign-in-container">
+		
+   <form action="/users/create" method="POST">
+			<h1>Registration</h1>
+			<div class="social-container">
+				<a href="/users/auth/google" class="social"><img src="/images/google.png" height="30" width="30"><span></span></a>
+			</div>
+			<span>or use your account</span>
+			<input type="name" name="name" placeholder="your name" required>
+			<input type="email" name="email" placeholder="your email"  required>
+			<input type="password" name="password" placeholder="your password"  required>
+			<input type="password" name="confirm_password" placeholder="Confirm password"  required>
+			<a href="/users/forget_password">Forgot your password?</a>
+			<button>Registration</button>
+		</form>
+	</div>
+	<div class="overlay-container">
+		<div class="overlay">
+			<div class="overlay-panel overlay-right">
+				<h1>Hello, Friend!</h1>
+				<p>Welcome To Sahinotes Created By Suzel</p>
+				<a href="/users/signin" class="ghost" id="signUp">Log In</a>
+			</div>
+		</div>
+	</div>
+</div>

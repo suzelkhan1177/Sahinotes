@@ -1,6 +1,17 @@
 <link rel="stylesheet" type="text/css" href="/css/profile.css">
-    <h1>Profile Page</h1>
-
-<a href="/users/logout">LogOut</a>
-<a href="/users/verify_mobile">Verify Mobile</a>
-
+<div id="heading">
+    <h1>profile page</h1>
+</div>
+<form action="/users/upload_notes" enctype="multipart/form-data" method="POST">
+    <input id="name" type="text" name="name" placeholder="Name of the notes" required>
+    <input id="about" type="text" name="about" placeholder="About of the notes" required>
+    <input type="file" name="notes" required>
+    <input type="submit" value="Upload" id="upload">
+</form>
+<a href="/users/logout">logout</a>
+<a href="/users/verify_mobile">Verify mobile</a>
+<button id="btn">Get Notes</button>
+<div id="notes_view">
+    
+</div>
+<script src="/js/profile.js"></script>
