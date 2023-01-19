@@ -8,7 +8,8 @@ const userSchema = new mongoose.Schema({
     mobile: {type: String},
     accessToken: {type: String, default: null},
     notes: [{type : mongoose.Schema.Types.ObjectId, ref: 'Note'}],
-    likedNotes:[{type: mongoose.Schema.Types.ObjectId ,  ref: 'Note'}]
+    likedNotes:[{type: mongoose.Schema.Types.ObjectId ,  ref: 'Note'}],
+    comments:[{type: mongoose.Schema.Types.ObjectId ,  ref: 'Comment'}]
 }, {
     timestamps: true
 });
