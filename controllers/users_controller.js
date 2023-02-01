@@ -8,9 +8,12 @@ const Comment = require('../models/comments');
 const fs = require('fs');
 const env = require("../environment");
 
-module.exports.user = (req, res) => {
-  res.send("User page");
-};
+
+
+module.exports.home = (req, res) =>{
+  res.render("home");
+}
+
 
 module.exports.profile = (req, res) => {
   if (req.isAuthenticated()) {
