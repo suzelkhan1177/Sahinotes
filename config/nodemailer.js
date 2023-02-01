@@ -1,5 +1,6 @@
 const nodemailer = require("nodemailer");
 const ejs = require("ejs");
+const env = require("../environment");
 
 
 let transporter = nodemailer.createTransport({
@@ -10,8 +11,8 @@ let transporter = nodemailer.createTransport({
   port: 587,
   secure: false,
   auth: {
-    user: "suzelkhan46@gmail.com",
-    pass: "lvarpjtlioxxqxha",
+    user: env.USER,
+    pass: env.PASS,
   },
 });
 

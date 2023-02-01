@@ -1,0 +1,22 @@
+<link rel="stylesheet" type="text/css" href="/css/upload_notes.css">
+<main class="main">
+    <div class="login-page">
+        <div class="form">
+          <form class="login-form" action="/users/upload_notes" enctype="multipart/form-data" method="POST" >
+            <h1>Upload Note</h1>
+            <label for="file-input" id="file">Choose a file <input id="file-input"  type="file" name="notes" required> </label>
+                <p>
+                <label for="fullname">Note Name</label>
+                  <input id="name" type="text" name="name" placeholder="Name of the notes" required>
+                </p>
+                 <p>
+                     <label for="fullname">About</label>
+                     <input id="about" type="text" name="about" placeholder="About of the notes" required>
+                  </p>
+             
+             <input id="btn2" type="submit" value="Upload" id="upload">
+        </form>
+        </div>
+      </div>
+    </main>
+    

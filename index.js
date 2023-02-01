@@ -18,7 +18,26 @@ require('./config/nodemailer');
 const sassMiddleware = require('node-sass-middleware');
 // require('./config/mobile_auth'); 
 
+const bodyParser = require('body-parser');
+const env = require("./environment");
+const morgan = require("morgan");
+const rfs = require("rotating-file-stream");
+const fs = require("fs");
+const { SECRET_PASS } = require("./environment");
 
+const logDirectory = __dirname + "/logs";
+if(!fs.existsSync(logDirectory)){
+   fs.mkdirSync(logDirectory);
+}
+
+const logStream  = rfs.createStream('access.log', {
+     interval : '1h',
+     path: logDirectory
+});
+
+app.use(morgan('dev', {stream: logStream}));
+
+app.use(bodyParser());
 app.use(sassMiddleware({
        src: './assets/scss',
        dest: './assets/css',
@@ -44,12 +63,12 @@ app.use(express.static("./assets"));
 app.use('/uploads/notes', express.static("/uploads/notes"));
 
 app.use(session({
-  name: 'sahinotes',
-  secret: 'suzelkhan',
+  name:  env.SECRET_NAME,
+  secret:  env.SECRET_PASS,
   cookie: {
     maxAge: (60*60*24*1000)
   },
-  store: mongoStore.create({mongoUrl: 'mongodb://localhost/sahinotes_development'})
+  store: mongoStore.create({mongoUrl: env.MONGO_URL})
 }));
 
 app.use(passport.initialize());

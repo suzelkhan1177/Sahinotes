@@ -1,5 +1,3 @@
-/* @import url(https://fonts.googleapis.com/css?family=Roboto:300); */
-
 .login-page {
 	width: 360px;
 	padding: 8% 0 0;
@@ -26,22 +24,39 @@
 	box-sizing: border-box;
 	font-size: 14px;
   }
-  .form button {
-		margin-top: 10px;
-		border-radius: 20px;
-		border: 1px solid  rgb(56, 253, 56);
-		background-color:  rgb(102, 250, 102);
-		color: #FFFFFF;
-		font-size: 12px;
-		font-weight: bold;
-		padding: 12px 45px;
-		letter-spacing: 1px;
-		text-transform: uppercase;
-		transition: transform 80ms ease-in;
+  /* input[type="file"] {
+    display: none;
+  } */
+  .form #file-input{
+    color: black;
+  }
+  .form #file {
+    background-color: #098041;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    margin-top: 20px;
+
+}
+  
+  .form #btn2 {
+    font-family: "Roboto", sans-serif;
+    text-transform: uppercase;
+    outline: 0;
+    background: #4CAF50;
+    width: 100%;
+    border: 0;
+    padding: 15px;
+    color: #FFFFFF;
+    font-size: 14px;
+    -webkit-transition: all 0.3 ease;
+    transition: all 0.3 ease;
+    cursor: pointer;
 	
   }
-  .form button:hover,.form button:active,.form button:focus {
-	background: #43A047;
+  .form #btn2:hover,.form button:active,.form button:focus {
+	background: #08670d;
   }
   .form .message {
 	margin: 15px 0 0;
@@ -87,13 +102,4 @@ label {
 
 .main{
 	margin-top: 50px;
-}
-
-.signup-footer p {
-    color: rgb(25, 24, 24);
-    text-align: center;
-}
-
-.signup-footer p a {
-    color: #2773a5;
 }

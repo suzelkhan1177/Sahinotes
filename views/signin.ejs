@@ -1,26 +1,30 @@
-<link rel="stylesheet" href='/css/signin.css')>
+<link rel="stylesheet" type="text/css" href="/css/signin.css">
 
-<div class="container" id="container">
-	<div class="form-container sign-in-container">
-		<form action="/users/create_session" method="POST">
-			<h1>Log In</h1>
-			<div class="social-container">
-				<a href="/users/auth/google" class="social"><img src="/images/google.png" height="30" width="30"><span></span></a>
-			</div>
-			<span>or use your account</span>
-            <input type="email" name="email" placeholder="your email" required>
-            <input type="password" name="password" placeholder="your password" required>
-			<a href="/users/forget_password">Forgot your password?</a>
-			<button>Log In</button>
-		</form>
-	</div>
-	<div class="overlay-container">
-		<div class="overlay">
-			<div class="overlay-panel overlay-right">
-				<h1>Hello, Friend!</h1>
-				<p>Welcome To Sahinotes Created By Suzel</p>
-				<a href="/users/signup" class="ghost" id="signUp">Registration</a>
-			</div>
+<main class="main">
+<div class="login-page">
+    <div class="form">
+      <form class="login-form" action="/users/create_session" method="POST" >
+		<h1>Log In</h1>
+		<div class="social-container">
+			<a href="/users/auth/google" class="social"><img src="/images/google.png" height="30" width="30"><span></span></a>
 		</div>
-	</div>
-</div>
+        <span>or use your account</span>
+			   <p>
+			  	<label for="fullname">Email</label>
+				<input type="email" name="email" placeholder="your email"  required>
+			   </p>
+	              <p>
+
+			     <label for="fullname">Password</label>
+				<input type="password" name="password" placeholder="your password"  required>
+			     </p>
+          	<a href="/users/forget_password">Forgot your password?</a>
+			<button>Log In</button>
+	
+	</form>
+	<footer class="signup-footer">
+		<p>Create New Account? <a href="/users/signup">SignUp</a> </p>
+	</footer>
+    </div>
+  </div>
+</main>

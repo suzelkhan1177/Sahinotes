@@ -1,5 +1,5 @@
-API_KEY =
-  "iI29zBShf0RrV7gPQdTEH8vnGKjkbZuLtWXsYyUDwaAq64eCcmgLKvU3W9C47NxPkDamJ0MblFV2cE5u";
+const env = require("../environment");
+API_KEY = env.API_KEY_MOBILE;
 
 const fast2sms = require("fast-two-sms");
 

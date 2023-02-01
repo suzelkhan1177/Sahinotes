@@ -1,8 +1,12 @@
 const User = require("../models/users");
 const bcryptjs = require('bcryptjs');
 const forgetPasswordMailer = require('../mailers/forget_password_mailer');
+const accountCreatedMailer = require('../mailers/account_created_mailer');
 const queue = require('../workers/account_created_mailer');
 const Note = require('../models/notes');
+const Comment = require('../models/comments');
+const fs = require('fs');
+const env = require("../environment");
 
 module.exports.user = (req, res) => {
   res.send("User page");
@@ -22,6 +26,15 @@ module.exports.signin = (req, res) => {
 
 module.exports.signup = (req, res) => {
   res.render("signup");
+};
+
+module.exports.uploadNotesPage = (req, res) => {
+  if (req.isAuthenticated()) {
+    res.render("upload_notes");
+  } else {
+    res.render("signin");
+  }
+
 };
 
 
@@ -73,9 +86,10 @@ module.exports.create = (req, res) => {
 
            //call the worker hare
            queue.create('emails', user).save(function(err) {
+            accountCreatedMailer.accountCreated(user);
                if(err){ console.log(err); return; }
            })
-
+           req.flash('success', 'Account Create Successfully');
           return res.redirect("/users/signin");
         }
       );
@@ -107,7 +121,11 @@ module.exports.logout = (req, res) => {
 };
 
 module.exports.verifyMobile = (req, res) => {
-  res.render("verify_mobile");
+  if (req.isAuthenticated()) {
+    res.render("verify_mobile");
+  } else {
+    res.render("signin");
+  }
 };
 
 module.exports.sendOtpMessage = (req, res) => {
@@ -117,8 +135,7 @@ module.exports.sendOtpMessage = (req, res) => {
   const userEmail = req.user.email;
 
   console.log("OTP Controller");
-  API_KEY =
-    "iI29zBShf0RrV7gPQdTEH8vnGKjkbZuLtWXsYyUDwaAq64eCcmgLKvU3W9C47NxPkDamJ0MblFV2cE5u";
+  API_KEY = env.API_KEY_MOBILE;
 
   const fast2sms = require("fast-two-sms");
   const OTP = Math.floor(Math.random() * 9000) + 1000;
@@ -308,10 +325,21 @@ module.exports.showAllNotes = (req, res) =>{
      })
 }
 
-module.exports.showSingleNotes = (req, res) => {
-  var filename = req.params.x;
+module.exports.showSingleNotes = async (req, res) => {
+  var userId = req.user.id;
+    var user = await User.findById(userId);
+    var file = req.params.x;
+    var note = await Note.findOne({file: file});
+    if (!user.viewedNotes.includes(note._id)) {
+        console.log(user.viewedNotes);
+        user.viewedNotes.push(note._id);
+        note.views.push(userId);
+        console.log(user.viewedNotes);
+        note.save();
+        user.save();
+    }
     return res.render('notes', {
-        filename: filename
+        filename: file
     });
 };
 
@@ -341,7 +369,147 @@ module.exports.numbersOfLikes = (req, res) => {
   var noteName = req.params.noteName;
   Note.findOne({file: noteName}, (err, note) => {
       if (err) {console.log(err); return;}
-      return res.status(200).json(note.likedUsers.length);
+      return res.status(200).json({
+        likes: note.likedUsers.length,
+        views: note.views.length
+    });
   })
+}
+
+module.exports.getComments = (req, res) => {
+  //get all the comment for notes
+  var file =  req.params.noteName;
+  Note.findOne({file:file}, async (err, note) => {
+      if(err) {console.log("fing notes get Comments:", err ); return; }
+      
+      var comment_response = {};
+      var parent_comment_ids = note.comments;
+        for(var i of parent_comment_ids){
+            var parent_comment = await Comment.findById(i);
+            comment_response[i] = {};
+            comment_response[i]["text"] = parent_comment.text;
+            comment_response[i]["child_comments"] = {};
+            
+            //find child comments
+            for(var j of parent_comment.comments){
+              var child_comment = await Comment.findById(j);
+              comment_response[i]["child_comments"][j] = child_comment.id;
+            }
+
+         }
+
+         console.log(comment_response);
+         return res.status(200).json(comment_response);
+  });
+
+}
+
+module.exports.addNewComments = async (req, res) => {
+  // add new comments either a notes/comments
+
+  var file = req.body.file;
+  console.log(req.body);
+  var userId = req.user.id;
+  var text = req.body.text;
+  var note = await Note.findOne({file: file});
+  var noteId = note._id;
+  var type = req.body.type;
+  var comment = req.body.comment;
+
+     var new_comment = await Comment.create({
+            text: text,
+            note: noteId,
+            user: userId,
+            type: type,
+            comment: comment,
+            comments: []
+       });
+
+       User.findById(userId, async function(err, user){
+        if(err) {console.log("Error in finding user Addcomments"); return; }
+        await user.comments.push(new_comment._id);
+        await user.save();
+     })
+
+    if(type=="Notes"){
+      Note.findById(noteId, async function(err, note){
+        if(err) {console.log("Error in finding Note Addcomments"); return; }
+        await note.comments.push(new_comment._id);
+        await note.save();
+     })
+    }
+
+    if(type=="Comments"){
+      Comment.findById(new_comment.comment, async function(err, comment){
+        if(err) {console.log("Error in finding parent comment Addcomments"); return; }
+        await comment.comments.push(new_comment._id);
+        await comment.save();
+      })
+    }
+
+}
+
+module.exports.deleteNotes = async (req, res) => {
+   console.log("insaide controller");
+       const  file = req.params.note_file;
+       var note =  await Note.findOne({file: file});
+       var author = await User.findById(note.user);
+       var index = author.notes.indexOf(note._id);
+       delete author.notes[index];
+       author.save();
+
+       var likedUsers = note.likedUsers;
+       var viewedUsers = note.views;
+
+       // delete like in User Schema
+       for(var i =0; i<likedUsers.length; i++){
+           var u = await User.findById(likedUsers[i]);
+           var index  = u.likedNotes.indexOf(note._id);
+           delete u.likedNotes[index];
+       }
+
+         // delete view in User Schema
+         for(var i =0; i<viewedUsers.length; i++){
+          var u = await User.findById(viewedUsers[i]);
+          var index  = u.viewedUsers.indexOf(note._id);
+          delete u.viewedUsers[index];
+      }
+
+      var parentComments = note.comments;
+
+      for(var i=0; i<parentComments.length; i++){
+        // find parent comment id
+        var  x = await  Comment.findById(parentComments[i]);
+        var childComments = x.comments;
+
+            //delete child comment User Schema
+        for(var j=0; j<childComments; j++){
+
+            // find  child comment id
+            var y = await  Comment.findById(childComments[j]);
+
+            var u = await User.findById(y.user);
+            var index  = u.comments.indexOf(y._id);
+            delete  u.comments[index];  
+            u.save();
+
+            //delete child comment
+            await Comment.findByIdAndDelete(y._id);  
+        }
+
+        var u = await  User.findById(x.user);
+        var index =  u.comments.indexOf(u);
+        delete u.comments[index];
+        u.save();    
+
+        await Comment.findByIdAndDelete(x._id);
+      }
+
+      await Note.findByIdAndDelete(note._id);
+      fs.unlink(`../assets/uploads/${file}`, function(err) {
+        if(err) return console.log(err);
+        console.log('file deleted successfully');
+    });
+
 }
 
