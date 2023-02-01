@@ -251,10 +251,19 @@ module.exports.update_password_post = (req, res) => {
   if (err) {console.log('Error in finding user: ', err); return;}
      
       if(accessToken == user.accessToken){
-        User.findOneAndUpdate({email: email}, {password: password, accessToken: null}, function(err, user) {
-          if (err) {console.log('Error in finding user: ', err); return;}
-          user.save();
-      });
+          bcryptjs.genSalt(12, (err, salt) => {
+         if (err) throw err;
+         // hash the password
+         bcryptjs.hash(password, salt, (err, hash) => {
+             if (err) throw err;
+       
+         User.findOneAndUpdate({email: email}, {password: hash, accessToken: null}, function(err, user) {
+           if (err) {console.log('Error in finding user: ', err); return;}
+           user.save();
+       });
+ 
+          });
+     });
       }
 });
 req.flash('success', 'Update Password Successfully');
