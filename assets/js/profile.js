@@ -9,7 +9,7 @@ function removeChildElements(htmlElement){
 }
 
 btn.addEventListener('click', () => {
-     fetch('/users/show_all_notes')
+     fetch('/users/notes/show_all_notes')
      .then((response) => response.json())
      .then((notes) => {
        console.log(notes);
@@ -23,7 +23,7 @@ btn.addEventListener('click', () => {
              var  filename =notes[i].file;    
              new_notes_id.addEventListener('click', (e) => {
                    console.log(e.target);
-                 window.location  = `/users/show_single_notes/${filename}`;
+                 window.location  = `/users/notes/show_single_notes/${filename}`;
              });
              var delete_button = document.createElement('button');
              delete_button.innerHTML = 'delete';

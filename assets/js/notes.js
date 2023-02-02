@@ -1,7 +1,7 @@
 var like_button = document.getElementById('like_button');
 var note_name = document.getElementById('note_name').innerHTML;
 var views = document.getElementById('views');
-fetch(`/users/get_number_of_likes/${note_name}`)
+fetch(`/users/toggle/get_number_of_likes/${note_name}`)
 .then((response) => response.json())
 .then((data) => {
     var likes = document.getElementById('likes');
@@ -10,7 +10,7 @@ fetch(`/users/get_number_of_likes/${note_name}`)
     views.innerHTML = data.views;
 })
 like_button.addEventListener('click', () => {
-    fetch(`/users/like_notes/${note_name}`, {method: 'PUT'})
+    fetch(`/users/toggle/like_notes/${note_name}`, {method: 'PUT'})
     .then((response) => response.json())
     .then(() => {
         console.log('like done successfully');
@@ -33,7 +33,7 @@ add_comment_note_btn.addEventListener("click", function() {
             "type": "Notes",
             "comment": null
         }
-        fetch(`/users//new_note_comment`, {
+        fetch(`/users/toggle/new_note_comment`, {
             method: 'POST',
             mode: 'cors',
             cache: 'no-cache',
@@ -48,7 +48,7 @@ add_comment_note_btn.addEventListener("click", function() {
 });
 
 function fetchAllComments() {
-    fetch(`/users/get_all_comments/${note_name}`)
+    fetch(`/users/toggle/get_all_comments/${note_name}`)
     .then((response) => response.json())
     .then((comments_response) => {
         console.log(comments_response);

@@ -6,7 +6,7 @@ sendOtpButton.addEventListener("click", function (e) {
       //call a GET API
       e.preventDefault();
       console.log(mobileNumber.value);
-      fetch(`/users/send_otp_message/${mobileNumber.value}`);
+      fetch(`/users/mobile_auth/send_otp_message/${mobileNumber.value}`);
       console.log('otp sent');
 });
 
@@ -19,6 +19,6 @@ verify.addEventListener('click', function(e) {
      obj.mobileNumber = mobileNumber.value;
 
     //   convert object to text so that you can send it in a url
-    fetch(`/users/verify_otp/${JSON.stringify(obj)}`);
+    fetch(`/users/mobile_auth/verify_otp/${JSON.stringify(obj)}`);
     window.location = "/users/profile";
 });
