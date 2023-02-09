@@ -16,10 +16,10 @@
       <% if(flash.success && flash.success.length > 0){ %>
 
          new Noty({
-          theme: 'mint',
+          theme:'relax',
           text: '<%= flash.success %>',
           type: 'success',
-          layout: 'topRight',
+          layout: "topCenter",
           timeout:3000
           
          }).show();
@@ -32,7 +32,7 @@
           theme: 'mint',
           text: '<%= flash.error %>',
           type: 'error',
-          layout: 'topRight',
+          layout: "topCenter",
           timeout:3000
           
          }).show();

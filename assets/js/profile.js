@@ -1,5 +1,5 @@
 
-var btn  = document.getElementById('btn');
+// var btn  = document.getElementById('btn');
 var notes_view = document.getElementById('notes_view');
 
 function removeChildElements(htmlElement){
@@ -8,7 +8,7 @@ function removeChildElements(htmlElement){
    }
 }
 
-btn.addEventListener('click', () => {
+window.addEventListener('load', () => {
      fetch('/users/notes/show_all_notes')
      .then((response) => response.json())
      .then((notes) => {
@@ -30,9 +30,18 @@ btn.addEventListener('click', () => {
              delete_button.setAttribute('id', notes[i].file);
              new_div.appendChild(delete_button);
              delete_button.addEventListener('click', (e) => {
+
                  var name = e.target.getAttribute('id');
                  fetch(`/users/delete_note/${name}`, { method: 'DELETE' })
                  .then(() => console.log('Delete successful'));
+
+                 new Noty({
+                  theme: "relax",
+                  type: "success",
+                  text: "Delete Note Successfully!!",
+                  layout: "topCenter",
+                  timeout: 3000,
+                }).show();
              })
              new_notes_id.style.cursor = 'pointer';
              notes_view.appendChild(new_div);

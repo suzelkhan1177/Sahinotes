@@ -40,4 +40,6 @@ router.get(
 
 router.delete("/delete_note/:note_file", usersController.deleteNotes);
 
+router.get("/get_all_users", usersController.getAllUsers);
+
 module.exports = router;

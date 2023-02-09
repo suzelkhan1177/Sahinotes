@@ -19,7 +19,7 @@ const noteSchema = new mongoose.Schema({
 // 2. what is the name of the stored file
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, __dirname+'/../uploads/notes');
+      cb(null, __dirname+'/../assets/uploads/notes');
     },
     filename: function (req, file, cb) {
       cb(null, file.originalname + '_' + Date.now());

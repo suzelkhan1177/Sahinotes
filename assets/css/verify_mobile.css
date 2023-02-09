@@ -5,6 +5,9 @@
   padding: 8% 0 0;
   margin: auto;
 }
+.main{
+	margin-top: 20px;
+}
 .form {
   position: relative;
   z-index: 1;

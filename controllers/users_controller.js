@@ -10,24 +10,49 @@ const env = require("../environment");
 
 
 module.exports.home = (req, res) =>{
-  res.render("home");
+  if (req.isAuthenticated()) {
+    var user = req.user.name;
+    res.render("home", {
+       userName : user
+    });
+  } else {
+    res.render("home");
+  }
 }
 
 
 module.exports.profile = (req, res) => {
+  // console.log(req.user);
   if (req.isAuthenticated()) {
-    res.render("profile");
+    var user = req.user.name;
+    res.render("profile", {
+       userName : user
+    });
   } else {
     res.render("signin");
   }
 };
 
 module.exports.signin = (req, res) => {
-  res.render("signin");
+  if (req.isAuthenticated()) {
+    var user = req.user.name;
+    res.render("profile", {
+       userName : user
+    });
+  } else {
+    res.render("signin");
+  }
 };
 
 module.exports.signup = (req, res) => {
-  res.render("signup");
+  if (req.isAuthenticated()) {
+    var user = req.user.name;
+    res.render("profile", {
+       userName : user
+    });
+  } else {
+    res.render("signup");
+  }
 };
 
 
@@ -114,24 +139,26 @@ module.exports.deleteNotes = async (req, res) => {
        var note =  await Note.findOne({file: file});
        var author = await User.findById(note.user);
        var index = author.notes.indexOf(note._id);
-       delete author.notes[index];
-       author.save();
+      await author.notes.splice(index, 1);
+      await author.save();
 
        var likedUsers = note.likedUsers;
        var viewedUsers = note.views;
 
-       // delete like in User Schema
+       // delete like  in User Schema
        for(var i =0; i<likedUsers.length; i++){
            var u = await User.findById(likedUsers[i]);
            var index  = u.likedNotes.indexOf(note._id);
-           delete u.likedNotes[index];
+           await u.likedNotes.splice(index, 1);
+           await u.save();
        }
 
          // delete view in User Schema
          for(var i =0; i<viewedUsers.length; i++){
           var u = await User.findById(viewedUsers[i]);
           var index  = u.viewedUsers.indexOf(note._id);
-          delete u.viewedUsers[index];
+          await u.viewedUsers.splice(index, 1);
+          await u.save();
       }
 
       var parentComments = note.comments;
@@ -149,8 +176,8 @@ module.exports.deleteNotes = async (req, res) => {
 
             var u = await User.findById(y.user);
             var index  = u.comments.indexOf(y._id);
-            delete  u.comments[index];  
-            u.save();
+            await  u.comments.splice(index, 1);
+            await u.save();
 
             //delete child comment
             await Comment.findByIdAndDelete(y._id);  
@@ -158,17 +185,23 @@ module.exports.deleteNotes = async (req, res) => {
 
         var u = await  User.findById(x.user);
         var index =  u.comments.indexOf(u);
-        delete u.comments[index];
-        u.save();    
+        await u.comments.splice(index, 1);
+        await u.save();    
 
         await Comment.findByIdAndDelete(x._id);
       }
 
       await Note.findByIdAndDelete(note._id);
-      fs.unlink(`../assets/uploads/${file}`, function(err) {
+      fs.unlink(__dirname+`/../assets/uploads/notes/${file}`, function(err) {
         if(err) return console.log(err);
         console.log('file deleted successfully');
     });
+ 
+}
 
+module.exports.getAllUsers = async (req, res) => {
+  var users = await User.find();
+  console.log(users);
+  return res.status(200).json(users);
 }
 

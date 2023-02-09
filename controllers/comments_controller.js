@@ -7,8 +7,8 @@ const Comment = require('../models/comments');
 
 module.exports.getComments = (req, res) => {
     //get all the comment for notes
-    var file =  req.params.noteName;
-    Note.findOne({file:file}, async (err, note) => {
+    var id =  req.params.noteName;
+    Note.findById(id , async (err, note) => {
         if(err) {console.log("fing notes get Comments:", err ); return; }
         
         var comment_response = {};
@@ -22,13 +22,14 @@ module.exports.getComments = (req, res) => {
               //find child comments
               for(var j of parent_comment.comments){
                 var child_comment = await Comment.findById(j);
-                comment_response[i]["child_comments"][j] = child_comment.id;
+                comment_response[i]["child_comments"][j] = child_comment.text;
               }
   
            }
   
-           console.log(comment_response);
+          //  console.log(comment_response);
            return res.status(200).json(comment_response);
+           
     });
   
   }
@@ -53,6 +54,7 @@ module.exports.getComments = (req, res) => {
               comment: comment,
               comments: []
          });
+         
   
          User.findById(userId, async function(err, user){
           if(err) {console.log("Error in finding user Addcomments"); return; }
@@ -75,5 +77,5 @@ module.exports.getComments = (req, res) => {
           await comment.save();
         })
       }
-  
+      req.flash('success','Comment Added!');
   }

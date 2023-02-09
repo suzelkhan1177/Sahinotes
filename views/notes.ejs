@@ -1,20 +1,48 @@
 <link rel="stylesheet" type="text/css" href="/css/notes.css">
-<div id="heading">
-    <h1>notes page</h1>
-    <h1 id="note_name"><%=locals.filename%></h1>
-</div>
-<div id="display_notes">
-    <embed src="http://localhost:8000/uploads/notes/<%=locals.filename%>" width="400px" height="400px"/>
-</div>
+<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
 
+<div class="card">
+<div id="heading" class="profile">
+    <h4>notes page</h4>
 
-<button id="like_button">like</button>
+    
+    <h5 id="note_name"><%=locals.filename%></h5>
+    <h5 id="note_id"><%=locals.id%></h5>
+</div>
+<div id="display_notes" class="post">
+    <!-- <embed src="http://localhost:8000/uploads/notes/<%=locals.filename%>" width="400px" height="400px"/> -->
+        <!-- <img src="https://picsum.photos/400/400"/ >  -->
+    </div>
+
 <p id="likes"></p>
+<!-- <button id="like_button">like</button> -->
+
+<div class="heart-btn" id="like_button">
+    <div class="content">
+      <span class="heart"></span>
+      <span class="text">Like</span>
+      <span class="numb"></span>
+    </div>
+  </div>
+
 <p id="views"></p>
+
+
 <input type="text" id="add_comment_to_note">
 <input type="submit" id="add_comment_note_btn" value="add comment">
 <div id="comments_section">
 
 </div>
+</div>
+<script>
+    $(document).ready(function(){
+      $('.content').click(function(){
+        $('.content').toggleClass("heart-active")
+        $('.text').toggleClass("heart-active")
+        $('.numb').toggleClass("heart-active")
+        $('.heart').toggleClass("heart-active")
+      });
+    });
+  </script>
 
 <script src="/js/notes.js"></script>

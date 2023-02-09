@@ -5,7 +5,10 @@ const Note = require('../models/notes');
 
 module.exports.uploadNotesPage = (req, res) => {
     if (req.isAuthenticated()) {
-      res.render("upload_notes");
+      var user = req.user.name;
+      res.render("upload_notes", {
+         userName : user
+      });
     } else {
       res.render("signin");
     }
@@ -38,10 +41,15 @@ module.exports.uploadNotesPage = (req, res) => {
 }
 
 module.exports.showSingleNotes = async (req, res) => {
+
+  if (req.isAuthenticated()) {
+    var userName = req.user.name;
+
  var userId = req.user.id;
    var user = await User.findById(userId);
    var file = req.params.x;
    var note = await Note.findOne({file: file});
+   var id = note._id;
    if (!user.viewedNotes.includes(note._id)) {
        console.log(user.viewedNotes);
        user.viewedNotes.push(note._id);
@@ -51,8 +59,13 @@ module.exports.showSingleNotes = async (req, res) => {
        user.save();
    }
    return res.render('notes', {
-       filename: file
+       id : id,
+       filename: file,
+       userName : userName
    });
+  } else{
+    res.render("signin");
+  }
 };
 
 
