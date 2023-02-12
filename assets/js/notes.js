@@ -21,6 +21,17 @@ like_button.addEventListener('click', () => {
         likes.innerHTML = parseInt(likes.innerHTML) + 1;
     })
     .catch((error) => console.log(error));
+    new Noty({
+
+        theme:'relax',
+        type:'success',
+        text:'Like Added!!!',
+        layout:"topCenter",
+        timeout:3000
+
+
+    }).show();
+
 });
 
 var add_comment_to_note = document.getElementById('add_comment_to_note');

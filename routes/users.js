@@ -4,7 +4,7 @@ const router = express.Router();
 
 const usersController = require("../controllers/users_controller");
 
-router.get("/profile", usersController.profile);
+router.get("/profile/:user_id", usersController.profile);
 router.get("/signin", usersController.signin);
 router.get("/signup", usersController.signup);
 router.get("/logout", usersController.logout);
@@ -40,6 +40,6 @@ router.get(
 
 router.delete("/delete_note/:note_file", usersController.deleteNotes);
 
-router.get("/get_all_users", usersController.getAllUsers);
+router.get("/get_all_users", passport.checkAuthentication, usersController.getAllUsers);
 
 module.exports = router;

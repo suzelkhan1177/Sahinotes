@@ -4,8 +4,10 @@ const env = require("../environment");
 module.exports.verifyMobile = (req, res) => {
   if (req.isAuthenticated()) {
     var user = req.user.name;
+    var user_id = req.user.id;
     res.render("verify_mobile", {
-       userName : user
+       userName : user,
+       user_id: user_id
     });
   } else {
     res.render("signin");

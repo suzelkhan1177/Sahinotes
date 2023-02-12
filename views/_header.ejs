@@ -10,7 +10,7 @@
         <div class="nav-links" id="nav-links">
             <ul class="flex">
                 <% if(locals.userName){  %>
-                <li><a href="/users/profile" class="hover-link"><h3><%- locals.userName %> </h3></a></li>
+                <li><a href="/users/profile/<%- locals.user_id  %>" class="hover-link"><h3><%- locals.userName %> </h3></a></li>
                 <li><a href="/users/notes/upload_notes_page" class="hover-link">Upload_Note</a></li>
                 <li><a href="/users/mobile_auth/verify_mobile" class="hover-link">Verify_Mobile</a></li>
                 <li><a href="/users/logout" class="hover-link">LogOut</a></li>
