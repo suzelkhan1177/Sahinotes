@@ -17,12 +17,16 @@ module.exports.getComments = (req, res) => {
               var parent_comment = await Comment.findById(i);
               comment_response[i] = {};
               comment_response[i]["text"] = parent_comment.text;
+              comment_response[i]["comment_user_name"] = parent_comment.comment_user_name;
               comment_response[i]["child_comments"] = {};
               
               //find child comments
               for(var j of parent_comment.comments){
                 var child_comment = await Comment.findById(j);
-                comment_response[i]["child_comments"][j] = child_comment.text;
+                var obj = {};
+                obj.text = child_comment.text;
+                obj.comment_user_name = child_comment.comment_user_name;
+                comment_response[i]["child_comments"][j] = JSON.stringify(obj);
               }
   
            }
@@ -38,8 +42,8 @@ module.exports.getComments = (req, res) => {
     // add new comments either a notes/comments
   
     var file = req.body.file;
-    console.log(req.body);
     var userId = req.user.id;
+    var userName = req.user.name;
     var text = req.body.text;
     var note = await Note.findOne({file: file});
     var noteId = note._id;
@@ -48,6 +52,7 @@ module.exports.getComments = (req, res) => {
   
        var new_comment = await Comment.create({
               text: text,
+              comment_user_name: userName,
               note: noteId,
               user: userId,
               type: type,
