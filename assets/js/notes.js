@@ -112,13 +112,8 @@ function fetchAllComments() {
 
         delete_button.addEventListener('click', (e) => {
 
-          console.log(note_name);
-          fetch(`/users/toggle/delte_note_comment/${note_name}`, { method: 'DELETE' })
+          fetch(`/users/toggle/delete_note_comment/${note_name}`, { method: 'DELETE' })
           .then(() => console.log('Delete successful'));
-
-          // var name = e.target.getAttribute('id');
-          // fetch(`/users/delete_note/${name}`, { method: 'DELETE' })
-          // .then(() => console.log('Delete successful'));
 
           new Noty({
            theme: "relax",
@@ -170,18 +165,42 @@ function fetchAllComments() {
         var child_comment_ids = Object.keys(
           comments_response[i]["child_comments"]
         );
+
+
+
+
         for (var j = 0; j < child_comment_ids.length; j++) {
           var p = document.createElement("p");
           var h4 = document.createElement("h4");
+          var delete_button = document.createElement('button');
+          delete_button.innerHTML = 'delete';
+          delete_button.setAttribute("id", j);
 
           var obj = comments_response[i]["child_comments"][child_comment_ids[j]];
           var val = JSON.parse(obj);
+         var id = val._id;
           p.innerHTML = val.text;
           h4.innerHTML = val.comment_user_name;
 
+          delete_button.addEventListener('click', (e) => {
+            fetch(`/users/toggle/delete_child_note_comment/${id}`, { method: 'DELETE' })
+            .then(() => console.log('Delete successful'));
+  
+            new Noty({
+             theme: "relax",
+             type: "success",
+             text: "Delete child comment Successfully!!",
+             layout: "topCenter",
+             timeout: 3000,
+           }).show();
+        })
+
           comment_div.appendChild(h4);
           comment_div.appendChild(p);
+          comment_div.appendChild(delete_button);
         }
+
+
         comments_section.appendChild(comment_div);
       }
     });

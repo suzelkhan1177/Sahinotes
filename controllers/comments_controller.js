@@ -24,6 +24,7 @@ module.exports.getComments = (req, res) => {
               for(var j of parent_comment.comments){
                 var child_comment = await Comment.findById(j);
                 var obj = {};
+                obj._id = child_comment._id;
                 obj.text = child_comment.text;
                 obj.comment_user_name = child_comment.comment_user_name;
                 comment_response[i]["child_comments"][j] = JSON.stringify(obj);
@@ -126,13 +127,26 @@ module.exports.getComments = (req, res) => {
             await Comment.findByIdAndDelete(commentId);
        })
       }
-  
-      if(type=="Comments"){
-         console.log("child comment");
-        // Comment.findById(commentId.comment, async function(err, comment){
-        //   if(err) {console.log("Error in finding parent comment Addcomments"); return; }
-        //   await comment.comments.remove(commentId);
-        //   await comment.save();
-        // });
-      }
+  }
+
+  module.exports.deleteChildComments = async (req, res) => {
+
+    var userId = req.user.id;
+    var commentId = req.params.comment_id;
+    var child_comment = await Comment.findById(commentId);
+
+    User.findById(userId, async function(err, user){
+      if(err) {console.log("Error in finding user Addcomments"); return; }
+      await user.comments.remove(commentId);
+      await user.save();
+   });
+
+   Comment.findById(child_comment.comment, async function(err, comment){
+    if(err) {console.log("Error in finding parent comment Addcomments"); return; }
+    await comment.comments.remove(commentId);
+    await comment.save();
+});
+
+await Comment.findByIdAndDelete(commentId);
+
   }
