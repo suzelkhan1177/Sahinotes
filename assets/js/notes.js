@@ -1,9 +1,11 @@
 var like_button = document.getElementById("like_button");
+var dislike_button = document.getElementById("dislike_button");
 var note_name = document.getElementById("note_name").innerHTML;
 var views = document.getElementById("views");
 var note_id = document.getElementById("note_id");
 note_id.style.display = "none";
 
+// fetch All LIkes
 fetch(`/users/toggle/get_number_of_likes/${note_name}`)
   .then((response) => response.json())
   .then((data) => {
@@ -12,6 +14,8 @@ fetch(`/users/toggle/get_number_of_likes/${note_name}`)
     console.log("data === ", data);
     views.innerHTML = data.views;
   });
+
+//     Like Button
 like_button.addEventListener("click", () => {
   fetch(`/users/toggle/like_notes/${note_name}`, { method: "PUT" })
     .then((response) => response.json())
@@ -30,10 +34,30 @@ like_button.addEventListener("click", () => {
   }).show();
 });
 
+//     DisLike Button
+dislike_button.addEventListener("click", () => {
+  fetch(`/users/toggle/dislike_notes/${note_name}`, { method: "PUT" })
+    .then((response) => response.json())
+    .then(() => {
+      console.log("dislike done successfully");
+      var likes = document.getElementById("likes");
+      likes.innerHTML = parseInt(likes.innerHTML) - 1;
+    })
+    .catch((error) => console.log(error));
+  new Noty({
+    theme: "relax",
+    type: "success",
+    text: "DisLike Added!!!",
+    layout: "topCenter",
+    timeout: 3000,
+  }).show();
+});
+
 var add_comment_to_note = document.getElementById("add_comment_to_note");
 var add_comment_note_btn = document.getElementById("add_comment_note_btn");
 var comments_section = document.getElementById("comments_section");
 
+  // Add New  Comment
 add_comment_note_btn.addEventListener("click", function () {
   if (add_comment_to_note.value != "") {
     var data = {
@@ -69,7 +93,7 @@ function fetchAllComments() {
   fetch(`/users/toggle/get_all_comments/${note_id.innerHTML}`)
     .then((response) => response.json())
     .then((comments_response) => {
-      console.log(comments_response);
+      // console.log(comments_response);
       var keys = Object.keys(comments_response);
       for (var i of keys) {
         var comment_div = document.createElement("div");
@@ -80,8 +104,30 @@ function fetchAllComments() {
         h3.innerHTML = comments_response[i]["comment_user_name"];
         var input = document.createElement("input");
         var submit = document.createElement("input");
+        var delete_button = document.createElement('button');
+        delete_button.innerHTML = 'delete';
+        delete_button.setAttribute("id", i);
         submit.setAttribute("id", i);
         input.classList.add(i);
+
+        delete_button.addEventListener('click', (e) => {
+
+          console.log(note_name);
+          fetch(`/users/toggle/delte_note_comment/${note_name}`, { method: 'DELETE' })
+          .then(() => console.log('Delete successful'));
+
+          // var name = e.target.getAttribute('id');
+          // fetch(`/users/delete_note/${name}`, { method: 'DELETE' })
+          // .then(() => console.log('Delete successful'));
+
+          new Noty({
+           theme: "relax",
+           type: "success",
+           text: "Delete comment Successfully!!",
+           layout: "topCenter",
+           timeout: 3000,
+         }).show();
+      })
         submit.addEventListener("click", function (e) {
           e.preventDefault();
           var id = e.target.id;
@@ -120,6 +166,7 @@ function fetchAllComments() {
         comment_div.appendChild(parent_comment_p);
         comment_div.appendChild(input);
         comment_div.appendChild(submit);
+        comment_div.appendChild(delete_button);
         var child_comment_ids = Object.keys(
           comments_response[i]["child_comments"]
         );

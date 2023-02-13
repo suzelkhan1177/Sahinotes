@@ -7,13 +7,35 @@ module.exports.likeNotes = (req, res) => {
     User.findById(userId, async (err, user) => {
         if (err) {console.log('Error in finding user in likeNotes: ', err); return;}
         try {
-            console.log("noteName = ",noteName);
+            // console.log("noteName = ",noteName);
             var note = await Note.findOne({file: noteName});
             if (!user.likedNotes.includes(note._id)) {
                 user.likedNotes.push(note._id);
             }
             if (!note.likedUsers.includes(userId)) {
                 note.likedUsers.push(userId);
+            }
+            note.save();
+            user.save();
+        } catch(err) {
+            console.log('error in finding not in likeNotes: ', err);
+        }
+    });
+  }
+
+  module.exports.DislikeNotes = (req, res) => {
+    var userId = req.user.id;
+    var noteName = req.params.noteName;
+    User.findById(userId, async (err, user) => {
+        if (err) {console.log('Error in finding user in likeNotes: ', err); return;}
+        try {
+            // console.log("noteName = ",noteName);
+            var note = await Note.findOne({file: noteName});
+            if (user.likedNotes.includes(note._id)) {
+                user.likedNotes.remove(note._id);
+            }
+            if (note.likedUsers.includes(userId)) {
+                note.likedUsers.remove(userId);
             }
             note.save();
             user.save();
