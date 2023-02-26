@@ -1,8 +1,0 @@
-[0mGET /users/profile [36m304[0m 113.177 ms - -[0m
-[0mGET /css/_header.css [36m304[0m 8.511 ms - -[0m
-[0mGET /css/profile.css [32m200[0m 32.464 ms - -[0m
-[0mGET /css/layout.css [32m200[0m 46.052 ms - -[0m
-[0mGET /js/profile.js [36m304[0m 5.366 ms - -[0m
-[0mGET /js/layout.js [36m304[0m 3.529 ms - -[0m
-[0mGET /images/favicon.ico [36m304[0m 1.990 ms - -[0m
-[0mGET /images/favicon.ico [36m304[0m 1.347 ms - -[0m
