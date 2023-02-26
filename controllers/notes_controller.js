@@ -44,17 +44,14 @@ module.exports.showAllNotes = (req, res) => {
 module.exports.showSingleNotes = async (req, res) => {
   if (req.isAuthenticated()) {
     var userName = req.user.name;
-
     var userId = req.user.id;
     var user = await User.findById(userId);
     var file = req.params.x;
     var note = await Note.findOne({ file: file });
     var id = note._id;
     if (!user.viewedNotes.includes(note._id)) {
-      console.log(user.viewedNotes);
       user.viewedNotes.push(note._id);
       note.views.push(userId);
-      console.log(user.viewedNotes);
       note.save();
       user.save();
     }
@@ -71,45 +68,35 @@ module.exports.showSingleNotes = async (req, res) => {
 
 module.exports.uploadNotes = (req, res) => {
   var id = req.user.id;
+  var name = req.body.name;
+  var about = req.body.about;
 
-  Note.create(
-    {
-      name: req.body.name,
-      about: req.body.about,
-      file: "",
-      user: id,
-    },
-    function (err, note) {
-      if (err) {
-        console.log("Error in creating new notes :", err);
-      }
-      //statics function cannot be called via object but just via schema
-      Note.uploadedFile(req, res, function (err) {
-        if (err) {
-          console.log("Error in saving file: ", err);
-          return;
-        }
+  if(req.files) {
+      var filename = req.files.notes.name;
+      var dotindex = filename.indexOf('.');
 
-        if (req.file) {
-          note.file = req.file.filename;
-          note.name = req.body.name;
-          note.about = req.body.about;
-          note.save();
-          User.findById(id, function (err, user) {
-            if (err) {
-              console.log("Error in adding file to user: ", err);
-              return;
-            }
+      filename = filename.substring(0, dotindex) + Date.now() + filename.substring(dotindex, filename.length);
+      console.log(filename);
 
-            user.notes.push(note.id);
-            user.save();
-          });
-        }
-      });
-    }
-  );
+      req.files.notes.mv(__dirname+"/../assets/uploads/notes/"+filename, function(err) {
+        if (err) {console.log('Error in moving file in folder: ', err); return res.send(err);}
+        Note.create({
+            name: name,
+            about: about,
+            file: filename,
+            user: id
+        }, function(err, note) {
+            if (err) {console.log('Error in saving note in DB: ', err); return res.send(err);}
+            User.findById(id, function(err, user) {
+                if (err) {console.log('Error in finding user in upload notes: ', err); return res.send(err);}
+                user.notes.push(note.id);
+                user.save();
+            })
+        })
+    })
+ 
+  }
 
-  console.log(id);
   req.flash("success", "File Uploded Successfully");
   return res.redirect(`/users/profile/${id}`);
 };

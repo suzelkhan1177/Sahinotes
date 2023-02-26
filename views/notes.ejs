@@ -8,9 +8,8 @@
     <h5 id="note_id"><%=locals.id%></h5>
 </div>
 <div id="display_notes" class="post">
-    <!-- <embed src="http://localhost:8000/uploads/notes/<%=locals.filename%>" width="400px" height="400px"/> -->
-        <!-- <img src="https://picsum.photos/400/400"/ >  -->
-    </div>
+    <object data="/uploads/notes/<%=locals.filename%>" width="450" height="400"></object>
+ </div>
 
  <p id="likes"></p>
 <button id="like_button">like</button>
