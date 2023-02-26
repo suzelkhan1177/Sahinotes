@@ -4,6 +4,9 @@ var note_name = document.getElementById("note_name").innerHTML;
 var views = document.getElementById("views");
 var note_id = document.getElementById("note_id");
 note_id.style.display = "none";
+var userId = document.getElementById("user_id");
+userId.style.display = "none";
+userId = userId.innerHTML;
 
 // fetch All LIkes
 fetch(`/users/toggle/get_number_of_likes/${note_name}`)
@@ -102,6 +105,7 @@ function fetchAllComments() {
         var parent_comment_p = document.createElement("p");
         parent_comment_p.innerHTML = comments_response[i]["text"];
         h3.innerHTML = comments_response[i]["comment_user_name"];
+        var commentUser = comments_response[i]["user"];
         var input = document.createElement("input");
         var submit = document.createElement("input");
         var delete_button = document.createElement('button');
@@ -161,7 +165,10 @@ function fetchAllComments() {
         comment_div.appendChild(parent_comment_p);
         comment_div.appendChild(input);
         comment_div.appendChild(submit);
+       
+        if(userId === commentUser){
         comment_div.appendChild(delete_button);
+        }
         var child_comment_ids = Object.keys(
           comments_response[i]["child_comments"]
         );
@@ -182,6 +189,8 @@ function fetchAllComments() {
           p.innerHTML = val.text;
           h4.innerHTML = val.comment_user_name;
 
+          var childCommentUser = val.user;
+
           delete_button.addEventListener('click', (e) => {
             fetch(`/users/toggle/delete_child_note_comment/${id}`, { method: 'DELETE' })
             .then(() => console.log('Delete successful'));
@@ -197,8 +206,11 @@ function fetchAllComments() {
 
           comment_div.appendChild(h4);
           comment_div.appendChild(p);
+          
+        if(userId === childCommentUser){
           comment_div.appendChild(delete_button);
         }
+   }
 
 
         comments_section.appendChild(comment_div);

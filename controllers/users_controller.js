@@ -29,7 +29,7 @@ module.exports.home = (req, res) => {
 
 module.exports.profile = (req, res) => {
   var logged_in_user = req.user._id;
-  var profile_user_id = req.params.logged_is_user_id;
+  var profile_user_id = req.params.user_id;
 
   if (req.isAuthenticated()) {
     var user = req.user.name;
@@ -216,7 +216,7 @@ module.exports.getAllUsers = async (req, res) => {
   if(req.isAuthenticated()){
   var users = await User.find();
   var output = [];
-  for(var i=0; i<users.length; i++){
+  for(let i=0; i<users.length; i++){
      output.push({id : users[i]._id, name : users[i].name});
   }
 

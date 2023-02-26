@@ -20,6 +20,9 @@ window.addEventListener('load', () => {
        for(let i=0; i<notes.length; i++) {
               var new_div = document.createElement('div');
               var new_notes_id = document.createElement('p');
+              var logged_in_user_id = document.getElementById('logged_in_user_id');
+                 logged_in_user_id.style.display = 'none';
+                logged_in_user_id = logged_in_user_id.innerHTML;
               new_notes_id.innerHTML = notes[i].name;
              new_div.appendChild(new_notes_id);
              new_div.style.border = '1px solid black';
@@ -31,8 +34,9 @@ window.addEventListener('load', () => {
              var delete_button = document.createElement('button');
              delete_button.innerHTML = 'delete';
              delete_button.setAttribute('id', notes[i].file);
-             console.log(notes[i].file);
+             if( logged_in_user_id == profile_id ){
              new_div.appendChild(delete_button);
+             }
              delete_button.addEventListener('click', (e) => {
 
                  var name = e.target.getAttribute('id');

@@ -18,6 +18,7 @@ module.exports.getComments = (req, res) => {
               comment_response[i] = {};
               comment_response[i]["text"] = parent_comment.text;
               comment_response[i]["comment_user_name"] = parent_comment.comment_user_name;
+              comment_response[i]["user"] = parent_comment.user;
               comment_response[i]["child_comments"] = {};
               
               //find child comments
@@ -27,6 +28,7 @@ module.exports.getComments = (req, res) => {
                 obj._id = child_comment._id;
                 obj.text = child_comment.text;
                 obj.comment_user_name = child_comment.comment_user_name;
+                obj.user = child_comment.user;
                 comment_response[i]["child_comments"][j] = JSON.stringify(obj);
               }
   
